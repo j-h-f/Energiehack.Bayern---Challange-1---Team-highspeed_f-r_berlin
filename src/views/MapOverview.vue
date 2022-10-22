@@ -20,7 +20,11 @@
         :center="center"
         :zoom="zoom"
       >
-        <MglMarker class="width-100" :coordinates="center" color="blue" />
+        <MglMarker
+          class="width-100 pos_abs"
+          :coordinates="center"
+          color="blue"
+        />
       </MglMap>
     </div>
   </div>
@@ -103,5 +107,9 @@ export default {
   position: absolute;
   top: 0;
   left: 0;
+}
+
+:deep(mapboxgl-marker mapboxgl-marker-anchor-center) {
+  position: absolute;
 }
 </style>
