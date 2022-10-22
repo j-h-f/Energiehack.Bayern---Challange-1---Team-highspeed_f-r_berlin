@@ -1,89 +1,18 @@
 <template>
-  <div class="map-overview-root has-text-left is-flex">
-    <div class="columns has-background-light max-width-30 has-radius box m-5">
-      <div class="column has-text-centered">
-        <h1 class="title is-1 has-text-primary">Kartenansicht</h1>
-        <div>
-          <b-button @click="show_static_city()" type="is-primary">
-            Suche nach Ingolstadt
-          </b-button>
-        </div>
-      </div>
-    </div>
-    <div class="has-background-light box m-5 max-width-30" v-if="activeCity">
-      <h3 class="title is-3 has-text-centered has-text-primary">
-        {{ activeCity.name }}
-      </h3>
-      <ul>
-        <li>
-          <div class="columns">
-            <div class="column is-3">Fläche</div>
-            <div class="column is-3">
-              {{ activeCity.city_data["Fläche in km²"] }} km²
-            </div>
-          </div>
-        </li>
-        <li>
-          <div class="columns">
-            <div class="column is-3">Einwohner</div>
-            <div class="column is-3">
-              {{ activeCity.city_data["Einwohner"] }}
-            </div>
-          </div>
-          <div class="is-flex width-50 einwohner">
-            <div
-              class="background-m"
-              :style="
-                'width:' +
-                get_pixel_values(
-                  activeCity.city_data['männlich'],
-                  activeCity.city_data['Einwohner']
-                ) +
-                ';'
-              "
-            >
-              <div>
-                <b-icon
-                  class="has-text-white"
-                  pack="fas"
-                  icon="person"
-                  size="is-small"
-                >
-                </b-icon>
-              </div>
-              <div>
-                {{ activeCity.city_data["männlich"] }}
-              </div>
-            </div>
-            <div
-              class="background-f"
-              :style="
-                'width:' +
-                get_pixel_values(
-                  activeCity.city_data['männlich'],
-                  activeCity.city_data['Einwohner']
-                ) +
-                ';'
-              "
-            >
-              <div>
-                {{ activeCity.city_data["weiblich"] }}
-              </div>
-              <div>
-                <b-icon
-                  class="is-pulled-right has-text-white"
-                  pack="fas"
-                  icon="person-dress"
-                  size="is-small"
-                >
-                </b-icon>
-              </div>
-            </div>
-          </div>
-        </li>
-      </ul>
-      {{ Object.keys(activeCity.city_data) }}
-    </div>
+  <div class="map-overview-root is-flex overflow">
+    <SearchBox v-model="searchResult" />
+    <SearchResultBox
+      v-if="searchResult.length > 0"
+      :searchResult="searchResult"
+      @input="setActiveCity"
+      @close="searchResult = []"
+    />
+    <DetailBox
+      @close="activeCity = null"
+      :activeCity="activeCity"
+      v-if="activeCity"
+    />
+
     <div class="is-background width-100">
       <MglMap
         :accessToken="accessToken"
@@ -91,78 +20,63 @@
         :center="center"
         :zoom="zoom"
       >
-        <MglNavigationControl position="top-right" />
-        <MglGeojsonLayer
-          :sourceId="'test-data'"
-          :source="geoJSONsource"
-          layerId="test-layer"
-          :layer="geoJsonLayer"
-        ></MglGeojsonLayer>
+        <MglMarker class="width-100" :coordinates="center" color="blue" />
       </MglMap>
     </div>
-    <!-- <div class="columns">
-  </div> -->
   </div>
 </template>
 
 <script>
 import Mapbox from "mapbox-gl";
-import { MglMap, MglNavigationControl, MglGeojsonLayer } from "vue-mapbox";
+import { MglMap, MglMarker } from "vue-mapbox";
+import SearchBox from "@/components/SearchBox.vue";
+import DetailBox from "@/components/DetailBox.vue";
+import SearchResultBox from "@/components/SearchResultBox.vue";
 
 export default {
   name: "MapOverview",
-  components: { MglMap, MglNavigationControl, MglGeojsonLayer },
+  components: { MglMap, SearchBox, DetailBox, SearchResultBox, MglMarker },
   data() {
     return {
       accessToken:
         "pk.eyJ1Ijoiai1oLWYtMiIsImEiOiJjbDlqcjI0eWUwNG5oM3ZxZHZneTRmYmN4In0.2mqB1vzS7kXBd0NGQjLfMQ",
+      // mapStyle: "mapbox://styles/ellichristine/cl9jzkfgp007t16t9vf57d0jr",
       mapStyle: "mapbox://styles/mapbox/light-v10",
       center: [11.385752778581312, 49.22867058547966],
       zoom: 6.75,
       activeCity: null,
-      geoJSONsource: {
-        type: "geojson",
-        data: {
-          type: "Feature",
-          geometry: {
-            type: "Point",
-            coordinates: [125.6, 10.1],
-          },
-          properties: {
-            name: "Dinagat Islands",
-          },
-        },
-      },
-      geoJsonLayer: {
-        id: "test-layer",
-        source: {
-          type: "Feature",
-          geometry: {
-            type: "Point",
-            coordinates: [125.6, 10.1],
-          },
-          properties: {
-            name: "Dinagat Islands",
-          },
-        },
-        "source-layer": "test-data",
-        type: "fill",
-        paint: {
-          "fill-color": "#00ffff",
-        },
-      },
+      activeCoordinates: null,
+      searchResult: [],
     };
   },
   created() {
     this.mapbox = Mapbox;
   },
   methods: {
+    setActiveCity(e) {
+      this.activeCity = e;
+      this.center = [
+        this.activeCity.coordinates_data.x,
+        this.activeCity.coordinates_data.y,
+      ];
+      this.zoom = 9;
+      // this.activeCoordinates = [
+      //   parseFloat(e.coordinates_data.x),
+      //   parseFloat(e.coordinates_data.y),
+      // ];
+    },
+
     show_static_city() {
       this.$http
         .get("/city/09161000", { withCredentials: false })
         .then((res) => {
           console.log(res.data);
           this.activeCity = res.data;
+          this.center = [
+            res.data.coordinates_data.x,
+            res.data.coordinates_data.y,
+          ];
+          this.zoom = 9;
         })
         .catch((err) => {
           console.log(err);
@@ -186,41 +100,8 @@ export default {
 }
 
 .is-background {
-  position: absolute;
+  // position: absolute;
   top: 0;
   left: 0;
-  z-index: -1;
-}
-
-.max-width-30 {
-  max-width: 30%;
-}
-
-.border-left {
-  border-left: 2px solid $primary;
-}
-
-.width-50 {
-  width: 50%;
-}
-
-.background-m {
-  background: rgb(44, 137, 208);
-  padding: 5px;
-  margin: 0;
-  height: 2rem;
-}
-
-.background-f {
-  background: rgb(250, 171, 208);
-  padding: 5px;
-  margin: 0;
-  height: 2.5rem;
-  display: flex;
-  vertical-align: middle;
-}
-
-.einwohner {
-  vertical-align: middle;
 }
 </style>

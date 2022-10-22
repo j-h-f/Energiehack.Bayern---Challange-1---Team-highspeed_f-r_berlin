@@ -6,7 +6,7 @@ $primary: #004aad;
 $primary-light: findLightColor($primary);
 $primary-dark: findDarkColor($primary);
 $primary-invert: findColorInvert($primary);
-$twitter: #4099FF;
+$twitter: #4099ff;
 $twitter-invert: findColorInvert($twitter);
 
 // Lists and maps
@@ -85,4 +85,26 @@ $navbar-height: 20vh;
 
 .has-radius {
     border-radius: 10px;
+}
+
+.foreground {
+    z-index: 1;
+}
+
+.overflow {
+    max-height: 90vh;
+    overflow: scroll;
+}
+
+.max-width-30 {
+    min-width: 15%;
+    max-width: 30%;
+}
+
+.border-left {
+    border-left: 2px solid $primary;
+}
+
+.width-50 {
+    width: 50%;
 }
