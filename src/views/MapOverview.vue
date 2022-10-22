@@ -25,6 +25,16 @@
           :coordinates="center"
           color="blue"
         />
+
+        <MglNavigationControl position="bottom-right" />
+
+        <MglGeojsonLayer
+          v-if="geojson"
+          :sourceId="geojson.name"
+          :source="geojson"
+          layerId="gemeindenLayer"
+          :layer="geojsonLayer"
+        />
       </MglMap>
     </div>
   </div>
@@ -32,14 +42,28 @@
 
 <script>
 import Mapbox from "mapbox-gl";
-import { MglMap, MglMarker } from "vue-mapbox";
+import {
+  MglMap,
+  MglMarker,
+  MglGeojsonLayer,
+  MglNavigationControl,
+} from "vue-mapbox";
 import SearchBox from "@/components/SearchBox.vue";
 import DetailBox from "@/components/DetailBox.vue";
 import SearchResultBox from "@/components/SearchResultBox.vue";
+import axios from "axios";
 
 export default {
   name: "MapOverview",
-  components: { MglMap, SearchBox, DetailBox, SearchResultBox, MglMarker },
+  components: {
+    MglMap,
+    MglMarker,
+    MglGeojsonLayer,
+    SearchBox,
+    DetailBox,
+    SearchResultBox,
+    MglNavigationControl,
+  },
   data() {
     return {
       accessToken:
@@ -51,10 +75,28 @@ export default {
       activeCity: null,
       activeCoordinates: null,
       searchResult: [],
+      geojson: null,
+      geojsonLayer: {
+        id: "gemeindenLayer",
+        source: {
+          type: "geojson",
+          data: null,
+        },
+        type: "line",
+      },
     };
   },
   created() {
     this.mapbox = Mapbox;
+    axios
+      .get("data/Gemeinden.geojson")
+      .then((res) => {
+        this.geojson = res.data;
+        this.geojsonLayer.source.data = this.geojson;
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   },
   methods: {
     setActiveCity(e) {
@@ -64,6 +106,12 @@ export default {
         this.activeCity.coordinates_data.y,
       ];
       this.zoom = 9;
+      this.geojsonLayer.source.data = this.geojson.features.filter((elem) => {
+        return (
+          elem.properties.AGS_0 ==
+          this.activeCity.city_data["Amtl. Gemeindeschlüssel"]
+        );
+      })[0];
       // this.activeCoordinates = [
       //   parseFloat(e.coordinates_data.x),
       //   parseFloat(e.coordinates_data.y),
