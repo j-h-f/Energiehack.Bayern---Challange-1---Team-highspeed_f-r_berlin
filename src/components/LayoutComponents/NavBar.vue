@@ -1,5 +1,5 @@
 <template>
-  <b-navbar>
+  <b-navbar class="nav-root">
     <template #brand>
       <b-navbar-item tag="router-link" :to="{ path: '/' }">
         <img
@@ -21,9 +21,8 @@
       <b-navbar-item tag="div">
         <div class="buttons">
           <a class="button is-primary">
-            <strong>Sign up</strong>
+            <strong>Logout</strong>
           </a>
-          <a class="button is-light"> Log in </a>
         </div>
       </b-navbar-item>
     </template>
@@ -45,5 +44,9 @@ export default {
 
 .logo {
   width: 100%;
+}
+
+.nav-root {
+  z-index: 4;
 }
 </style>
