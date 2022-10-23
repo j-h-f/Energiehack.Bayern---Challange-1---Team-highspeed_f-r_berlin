@@ -129,7 +129,7 @@
       </li>
       <li>
         <ListEntry
-          label="Kommunale Steuerkraft"
+          label="Steuerkraft je Einwohner 2022"
           :value="activeCity.taxes_data['2022 Steuerkraft je Einwohner']"
         ></ListEntry>
       </li>
@@ -140,7 +140,10 @@
         ></ListEntry>
       </li>
       <li>
-        <ListEntry label="Bevölkerungsdichte" :value="'tba'"></ListEntry>
+        <ListEntry
+          label="Bevölkerungsdichte"
+          :value="activeCity.population_density + ' Einwohner/km²'"
+        ></ListEntry>
       </li>
     </ul>
     <hr />
