@@ -6,7 +6,15 @@
     <div>
       <SearchBar v-model="searchResult" />
     </div>
-    <hr />
+    <hr class="seperator" />
+    <h3 class="title is-3 has-text-left has-text-primary">
+      Attraktive Gemeinden:
+    </h3>
+    <div class="mb-3" v-for="city in bestCities" :key="city.ident">
+      <b-button type="is-primary" @click="selectCity(city)">{{
+        city.name
+      }}</b-button>
+    </div>
   </div>
 </template>
 
@@ -27,7 +35,19 @@ export default {
   data() {
     return {
       searchResult: [],
+      bestCities: [],
     };
+  },
+  created() {
+    this.$http.get("highscore", { params: { results: 19 } }).then((res) => {
+      console.log(res.data);
+      this.bestCities = res.data;
+    });
+  },
+  methods: {
+    selectCity(city) {
+      this.$emit("city_select", city);
+    },
   },
 };
 </script>

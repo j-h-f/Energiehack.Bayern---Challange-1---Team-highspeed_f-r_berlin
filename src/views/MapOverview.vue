@@ -1,6 +1,6 @@
 <template>
   <div class="map-overview-root is-flex overflow">
-    <SearchBox v-model="searchResult" />
+    <SearchBox v-model="searchResult" @city_select="setActiveCity" />
     <SearchResultBox
       v-if="searchResult.length > 1"
       :searchResult="searchResult"
@@ -19,8 +19,6 @@
         :mapStyle="mapStyle"
         :center="center"
         :zoom="zoom"
-        @click="clickEvent"
-        @mouseleave="mouseleave"
       >
         <!-- <MglMarker v-if="activeCity" :coordinates="center" color="blue" /> -->
 
@@ -166,19 +164,6 @@ export default {
           );
         }
       )[0];
-    },
-
-    mousemove(e) {
-      console.log(e);
-      // if (e.features.length > 0) {
-      //   console.log(e.features);
-      // }
-    },
-
-    mouseleave() {},
-
-    clickEvent(e) {
-      console.log(e);
     },
 
     show_static_city() {

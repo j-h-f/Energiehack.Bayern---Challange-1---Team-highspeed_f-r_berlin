@@ -12,10 +12,9 @@
     <template #start>
       <b-navbar-item tag="router-link" :to="'/'"> Startseite </b-navbar-item>
       <b-navbar-item tag="router-link" :to="'/map'"> Karte </b-navbar-item>
-      <b-navbar-dropdown label="Info">
-        <b-navbar-item href="#"> About </b-navbar-item>
-        <b-navbar-item href="#"> Contact </b-navbar-item>
-      </b-navbar-dropdown>
+      <b-navbar-item tag="router-link" :to="'/compare'">
+        Vergleich
+      </b-navbar-item>
     </template>
 
     <template #end>
