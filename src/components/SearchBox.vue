@@ -11,9 +11,12 @@
       Attraktive Gemeinden:
     </h3>
     <div class="mb-3" v-for="city in bestCities" :key="city.ident">
-      <b-button type="is-primary" @click="selectCity(city)">{{
-        city.name
-      }}</b-button>
+      <b-button
+        style="width: 100%"
+        type="is-primary"
+        @click="selectCity(city)"
+        >{{ city.name }}</b-button
+      >
     </div>
   </div>
 </template>

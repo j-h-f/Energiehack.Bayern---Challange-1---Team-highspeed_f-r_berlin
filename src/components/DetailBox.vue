@@ -62,6 +62,8 @@
         <ListEntry label="Aktuelle Bandbreite Gewerbe" :value="''"></ListEntry>
         <InternetData :internet_data="activeCity.internet_data" type="gew" />
         <hr />
+        <competitor-data :data="activeCity.competition" />
+        <hr />
       </li>
       <li>
         <ListEntry
@@ -95,7 +97,12 @@
             :value="activeCity.major_data['Wahlvorschlag']"
           ></ListEntry>
         </li>
-        <li>Verhältnis Bürgermeister: {{ activeCity.city_data.Kreis }}</li>
+        <li>
+          <ListEntry
+            label="Verhältnis Bürgermeister"
+            :value="activeCity.major_data.friendlyness"
+          ></ListEntry>
+        </li>
       </ul>
       <hr />
     </div>
@@ -121,7 +128,7 @@
         ></ListEntry>
       </li>
       <li>
-        <ListEntry label="Kaufkraft" :value="'tba'"></ListEntry>
+        <ListEntry label="Kommunale Steuerkraft" :value="'tba'"></ListEntry>
       </li>
       <li>
         <ListEntry label="Bevölkerungswachstum" :value="'tba'"></ListEntry>
@@ -151,10 +158,11 @@
 import InternetData from "@/components/InternetData.vue";
 
 import ListEntry from "@/components/LayoutComponents/ListEntry.vue";
+import CompetitorData from "./CompetitorData.vue";
 
 export default {
   name: "DetailBox",
-  components: { ListEntry, InternetData },
+  components: { ListEntry, InternetData, CompetitorData },
   props: ["activeCity"],
   methods: {
     close() {

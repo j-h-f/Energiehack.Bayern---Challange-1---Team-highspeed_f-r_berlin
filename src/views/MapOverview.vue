@@ -13,6 +13,17 @@
       v-if="activeCity"
     />
 
+    <div class="box filterbox max-width-30">
+      <b-field>
+        <b-checkbox v-model="showCityBorders"> Gemeindegrenzen </b-checkbox>
+      </b-field>
+      <b-field>
+        <b-checkbox v-model="showLewInfrastructure">
+          Zeige LEW-Ausbaugebiete
+        </b-checkbox>
+      </b-field>
+    </div>
+
     <div class="is-background width-100">
       <MglMap
         :accessToken="accessToken"
@@ -25,6 +36,7 @@
         <MglNavigationControl position="bottom-right" />
 
         <MglGeojsonLayer
+          ref="cityBorders"
           v-if="geojson"
           :sourceId="geojson.name"
           :source="geojson"
@@ -39,6 +51,7 @@
           :layer="geojsonLayerActive"
         />
         <MglGeojsonLayer
+          ref="lewInfrastructure"
           v-if="lewInfrastructureSource"
           sourceId="lew_infrastructure"
           :source="lewInfrastructureSource"
@@ -81,6 +94,16 @@ export default {
         this.setActiveCity(newResult[0]);
       }
     },
+    // showCityBorders() {
+    //   if (!this.showCityBorders) {
+    //     this.$refs.cityBorders.remove();
+    //   }
+    // },
+    // showLewInfrastructure() {
+    //   if (!this.showLewInfrastructure) {
+    //     this.$refs.lewInfrastructure.remove();
+    //   }
+    // },
   },
   data() {
     return {
@@ -93,6 +116,8 @@ export default {
       activeCity: null,
       activeCoordinates: null,
       searchResult: [],
+      showCityBorders: true,
+      showLewInfrastructure: true,
       geojson: null,
       lewInfrastructureSource: null,
       geojsonLayer: {
@@ -201,7 +226,14 @@ $test: rgba(0, 75, 173, 0.514);
   left: 0;
 }
 
-:deep(mapboxgl-marker mapboxgl-marker-anchor-center) {
+.filterbox {
+  z-index: 1;
   position: absolute;
+  right: 1.5rem;
+  margin-top: 1.5rem;
 }
+
+// :deep(mapboxgl-marker mapboxgl-marker-anchor-center) {
+//   position: absolute;
+// }
 </style>
