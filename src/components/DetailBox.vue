@@ -46,24 +46,22 @@
     <ul>
       <li>
         <ListEntry
-          label="Aktuelle Bandbreite"
-          :value="activeCity.city_data.Region"
+          label="laufende Förderverfahren"
+          :value="activeCity.gigabit_data == null ? 'Nein' : 'Ja'"
         ></ListEntry>
       </li>
       <li>
         <ListEntry
-          label="Wettbewerb"
-          :value="activeCity.city_data.Kreis"
+          label="Aktuelle Bandbreite Privathaushalte"
+          :value="''"
         ></ListEntry>
-        <ListEntry
-          label="Telekom"
-          :value="activeCity.city_data.Kreis"
-        ></ListEntry>
-        <ListEntry
-          label="Vodafon"
-          :value="activeCity.city_data.Kreis"
-        ></ListEntry>
-        <ListEntry label="o2" :value="activeCity.city_data.Kreis"></ListEntry>
+        <InternetData :internet_data="activeCity.internet_data" type="priv" />
+        <hr />
+      </li>
+      <li>
+        <ListEntry label="Aktuelle Bandbreite Gewerbe" :value="''"></ListEntry>
+        <InternetData :internet_data="activeCity.internet_data" type="gew" />
+        <hr />
       </li>
       <li>
         <ListEntry
@@ -104,30 +102,59 @@
 
     <h4 class="title is-4 has-text-bold">Anwohner</h4>
     <ul>
-      <li>Einwohnerzahl: {{ activeCity.city_data.Region }}</li>
-      <li>%-männlich:</li>
-      <li>%-weiblich:</li>
-      <li>Kaufkraft:</li>
-      <li>Bevölkerungswachstum:</li>
-      <li>Bevölkerungsdichte:</li>
+      <li>
+        <ListEntry
+          label="Einwohnerzahl"
+          :value="activeCity.city_data.Einwohner"
+        ></ListEntry>
+      </li>
+      <li>
+        <ListEntry
+          label="männlich"
+          :value="activeCity.city_data['männlich']"
+        ></ListEntry>
+      </li>
+      <li>
+        <ListEntry
+          label="männlich"
+          :value="activeCity.city_data['weiblich']"
+        ></ListEntry>
+      </li>
+      <li>
+        <ListEntry label="Kaufkraft" :value="'tba'"></ListEntry>
+      </li>
+      <li>
+        <ListEntry label="Bevölkerungswachstum" :value="'tba'"></ListEntry>
+      </li>
+      <li>
+        <ListEntry label="Bevölkerungsdichte" :value="'tba'"></ListEntry>
+      </li>
     </ul>
     <hr />
 
     <h4 class="title is-4 has-text-bold">Wohnsituation</h4>
     <ul>
-      <li>Neubaugebiete aktuell: {{ activeCity.city_data.Region }}</li>
-      <li>Verteilung Wohnsituation:</li>
+      <li>
+        <ListEntry label="Anzahl Neubaugebiete" :value="'tba'"></ListEntry>
+      </li>
+      <li>
+        <ListEntry label="Verteilung Wohnsituation" :value="''"></ListEntry>
+        <ListEntry label="Einfamilienhäuser" :value="'tba'"></ListEntry>
+        <ListEntry label="mehrfamilienhäuser" :value="'tba'"></ListEntry>
+      </li>
     </ul>
     <hr />
   </div>
 </template>
 
 <script>
+import InternetData from "@/components/InternetData.vue";
+
 import ListEntry from "@/components/LayoutComponents/ListEntry.vue";
 
 export default {
   name: "DetailBox",
-  components: { ListEntry },
+  components: { ListEntry, InternetData },
   props: ["activeCity"],
   methods: {
     close() {

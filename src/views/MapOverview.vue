@@ -19,6 +19,7 @@
         :mapStyle="mapStyle"
         :center="center"
         :zoom="zoom"
+        @click="clickEvent"
         @mouseleave="mouseleave"
       >
         <!-- <MglMarker v-if="activeCity" :coordinates="center" color="blue" /> -->
@@ -168,12 +169,17 @@ export default {
     },
 
     mousemove(e) {
-      if (e.features.length > 0) {
-        console.log(e.features);
-      }
+      console.log(e);
+      // if (e.features.length > 0) {
+      //   console.log(e.features);
+      // }
     },
 
     mouseleave() {},
+
+    clickEvent(e) {
+      console.log(e);
+    },
 
     show_static_city() {
       this.$http
