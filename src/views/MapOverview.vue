@@ -19,12 +19,9 @@
         :mapStyle="mapStyle"
         :center="center"
         :zoom="zoom"
+        @mouseleave="mouseleave"
       >
-        <MglMarker
-          class="width-100 pos_abs"
-          :coordinates="center"
-          color="blue"
-        />
+        <!-- <MglMarker v-if="activeCity" :coordinates="center" color="blue" /> -->
 
         <MglNavigationControl position="bottom-right" />
 
@@ -35,6 +32,20 @@
           layerId="gemeindenLayer"
           :layer="geojsonLayer"
         />
+        <MglGeojsonLayer
+          ref="selectedCity"
+          v-if="activeCity"
+          :key="activeCity.ident"
+          :sourceId="geojson.name"
+          layerId="aktiveGemeindenLayer"
+          :layer="geojsonLayerActive"
+        />
+        <MglGeojsonLayer
+          sourceId="lew_infrastructure"
+          source="https://nfsb.schwiha.de/poi/lew-infrastructure"
+          layerId="lew_infrastructure_layer"
+          :layer="lew_infrastructure_layer"
+        />
       </MglMap>
     </div>
   </div>
@@ -44,7 +55,7 @@
 import Mapbox from "mapbox-gl";
 import {
   MglMap,
-  MglMarker,
+  // MglMarker,
   MglGeojsonLayer,
   MglNavigationControl,
 } from "vue-mapbox";
@@ -57,7 +68,7 @@ export default {
   name: "MapOverview",
   components: {
     MglMap,
-    MglMarker,
+    // MglMarker,
     MglGeojsonLayer,
     SearchBox,
     DetailBox,
@@ -84,6 +95,33 @@ export default {
         },
         type: "line",
       },
+      geojsonLayerActive: {
+        id: "gemeindenLayerAktiv",
+        source: {
+          type: "geojson",
+          data: null,
+        },
+        type: "fill",
+        paint: {
+          "fill-color": [
+            "case",
+            ["boolean", ["feature-state", "hover"], true],
+            "rgba(0, 75, 173, 0.5)",
+            "rgba(0, 75, 173, 0)",
+          ],
+        },
+      },
+      lew_infrastructure_layer: {
+        id: "lew_infrastructure_layer",
+        type: "circle",
+        source: {
+          type: "geojson",
+          data: "https://nfsb.schwiha.de/poi/lew-infrastructure",
+        },
+        paint: {
+          "circle-color": "rgba(0, 75, 173, 1)",
+        },
+      },
     };
   },
   created() {
@@ -106,17 +144,25 @@ export default {
         this.activeCity.coordinates_data.y,
       ];
       this.zoom = 9;
-      this.geojsonLayer.source.data = this.geojson.features.filter((elem) => {
-        return (
-          elem.properties.AGS_0 ==
-          this.activeCity.city_data["Amtl. Gemeindeschlüssel"]
-        );
-      })[0];
-      // this.activeCoordinates = [
-      //   parseFloat(e.coordinates_data.x),
-      //   parseFloat(e.coordinates_data.y),
-      // ];
+      this.geojsonLayerActive.source.data = this.geojson.features.filter(
+        (elem) => {
+          return (
+            elem.properties.AGS_0 ==
+            this.activeCity.city_data["Amtl. Gemeindeschlüssel"]
+          );
+        }
+      )[0];
+      console.log(this.mapbox.Map("map-7274304085749534"));
+      this.mapbox.Map("map-7274304085749534").triggerRepaint();
     },
+
+    mousemove(e) {
+      if (e.features.length > 0) {
+        console.log(e.features);
+      }
+    },
+
+    mouseleave() {},
 
     show_static_city() {
       this.$http
@@ -134,17 +180,13 @@ export default {
           console.log(err);
         });
     },
-    get_pixel_values(sub, total) {
-      console.log((sub.replace(".", "") / total.replace(".", "")) * 100 + "%");
-      return (sub.replace(".", "") / total.replace(".", "")) * 100 + "%";
-    },
   },
 };
 </script>
 
 <style lang="scss" scoped>
 @import "@/assets/scss/global.scss";
-
+$test: rgba(0, 75, 173, 0.514);
 .width-100 {
   width: 100vw !important;
   height: 100vh !important;
