@@ -15,9 +15,17 @@ import {
   faPerson,
   faPersonDress,
   faCircleXmark,
+  faCircleMinus,
+  faCircleCheck,
 } from "@fortawesome/free-solid-svg-icons";
 
-library.add([faPerson, faPersonDress, faCircleXmark]);
+library.add([
+  faPerson,
+  faPersonDress,
+  faCircleXmark,
+  faCircleMinus,
+  faCircleCheck,
+]);
 
 Vue.component("vue-fontawesome", FontAwesomeIcon);
 

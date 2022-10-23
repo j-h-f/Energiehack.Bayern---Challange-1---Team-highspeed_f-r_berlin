@@ -13,6 +13,33 @@
     </h3>
     <hr />
 
+    <h4 class="title is-4 has-text-bold">
+      Attraktivität
+      {{ activeCity.score }}
+      <b-icon
+        v-if="activeCity.score <= 7"
+        class="is-pulled-right"
+        pack="fas"
+        icon="circle-xmark"
+        type="is-danger"
+      ></b-icon>
+      <b-icon
+        v-if="activeCity.score > 7 && activeCity.score <= 21"
+        class="is-pulled-right"
+        pack="fas"
+        icon="circle-minus"
+        type="is-info"
+      ></b-icon>
+      <b-icon
+        v-if="activeCity.score > 21"
+        class="is-pulled-right"
+        pack="fas"
+        icon="circle-check"
+        type="is-success"
+      ></b-icon>
+    </h4>
+
+    <hr />
     <h4 class="title is-4 has-text-bold">Allgemein</h4>
     <ul>
       <li>
@@ -130,7 +157,7 @@
       <li>
         <ListEntry
           label="Steuerkraft je Einwohner 2022"
-          :value="activeCity.taxes_data['2022 Steuerkraft je Einwohner']"
+          :value="activeCity.taxes_data['2022 Steuerkraft je Einwohner'] + ' €'"
         ></ListEntry>
       </li>
       <li>
