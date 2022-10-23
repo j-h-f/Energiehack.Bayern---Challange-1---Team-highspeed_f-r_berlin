@@ -2,7 +2,7 @@
   <div class="map-overview-root is-flex overflow">
     <SearchBox v-model="searchResult" />
     <SearchResultBox
-      v-if="searchResult.length > 0"
+      v-if="searchResult.length > 1"
       :searchResult="searchResult"
       @input="setActiveCity"
       @close="searchResult = []"
@@ -33,16 +33,16 @@
           :layer="geojsonLayer"
         />
         <MglGeojsonLayer
+          v-if="geojson"
           ref="selectedCity"
-          v-if="activeCity"
-          :key="activeCity.ident"
           :sourceId="geojson.name"
           layerId="aktiveGemeindenLayer"
           :layer="geojsonLayerActive"
         />
         <MglGeojsonLayer
+          v-if="lewInfrastructureSource"
           sourceId="lew_infrastructure"
-          source="https://nfsb.schwiha.de/poi/lew-infrastructure"
+          :source="lewInfrastructureSource"
           layerId="lew_infrastructure_layer"
           :layer="lew_infrastructure_layer"
         />
@@ -75,6 +75,14 @@ export default {
     SearchResultBox,
     MglNavigationControl,
   },
+  watch: {
+    searchResult(newResult) {
+      if (newResult.length == 1) {
+        console.log(newResult[0]);
+        this.setActiveCity(newResult[0]);
+      }
+    },
+  },
   data() {
     return {
       accessToken:
@@ -87,6 +95,7 @@ export default {
       activeCoordinates: null,
       searchResult: [],
       geojson: null,
+      lewInfrastructureSource: null,
       geojsonLayer: {
         id: "gemeindenLayer",
         source: {
@@ -116,7 +125,7 @@ export default {
         type: "circle",
         source: {
           type: "geojson",
-          data: "https://nfsb.schwiha.de/poi/lew-infrastructure",
+          data: null,
         },
         paint: {
           "circle-color": "rgba(0, 75, 173, 1)",
@@ -135,6 +144,10 @@ export default {
       .catch((err) => {
         console.log(err);
       });
+    axios.get("https://nfsb.schwiha.de/poi/lew-infrastructure").then((res) => {
+      this.lewInfrastructureSource = res.data;
+      this.lew_infrastructure_layer.source.data = this.lewInfrastructureSource;
+    });
   },
   methods: {
     setActiveCity(e) {
@@ -152,8 +165,6 @@ export default {
           );
         }
       )[0];
-      console.log(this.mapbox.Map("map-7274304085749534"));
-      this.mapbox.Map("map-7274304085749534").triggerRepaint();
     },
 
     mousemove(e) {

@@ -74,31 +74,33 @@
     </ul>
     <hr />
 
-    <h4 v-if="activeCity.major_data" class="title is-4 has-text-bold">
-      Politik
-    </h4>
-    <ul>
-      <li>
-        <ListEntry
-          label="Bürgermeister"
-          :value="activeCity.major_data['Bürgermeister/in']"
-        ></ListEntry>
-      </li>
-      <li>
-        <ListEntry
-          label="Alter"
-          :value="new Date().getFullYear() - activeCity.major_data.Geburtsjahr"
-        ></ListEntry>
-      </li>
-      <li>
-        <ListEntry
-          label="Partei"
-          :value="activeCity.major_data['Wahlvorschlag']"
-        ></ListEntry>
-      </li>
-      <li>Verhältnis Bürgermeister: {{ activeCity.city_data.Kreis }}</li>
-    </ul>
-    <hr />
+    <div v-if="activeCity.major_data">
+      <h4 class="title is-4 has-text-bold">Politik</h4>
+      <ul>
+        <li>
+          <ListEntry
+            label="Bürgermeister"
+            :value="activeCity.major_data['Bürgermeister/in']"
+          ></ListEntry>
+        </li>
+        <li>
+          <ListEntry
+            label="Alter"
+            :value="
+              new Date().getFullYear() - activeCity.major_data.Geburtsjahr
+            "
+          ></ListEntry>
+        </li>
+        <li>
+          <ListEntry
+            label="Partei"
+            :value="activeCity.major_data['Wahlvorschlag']"
+          ></ListEntry>
+        </li>
+        <li>Verhältnis Bürgermeister: {{ activeCity.city_data.Kreis }}</li>
+      </ul>
+      <hr />
+    </div>
 
     <h4 class="title is-4 has-text-bold">Anwohner</h4>
     <ul>
