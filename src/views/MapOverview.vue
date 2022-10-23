@@ -13,7 +13,7 @@
       v-if="activeCity"
     />
 
-    <div class="box filterbox max-width-30">
+    <!-- <div class="box filterbox max-width-30">
       <b-field>
         <b-checkbox v-model="showCityBorders"> Gemeindegrenzen </b-checkbox>
       </b-field>
@@ -22,7 +22,7 @@
           Zeige LEW-Ausbaugebiete
         </b-checkbox>
       </b-field>
-    </div>
+    </div> -->
 
     <div class="is-background width-100">
       <MglMap
