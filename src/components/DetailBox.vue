@@ -128,10 +128,16 @@
         ></ListEntry>
       </li>
       <li>
-        <ListEntry label="Kommunale Steuerkraft" :value="'tba'"></ListEntry>
+        <ListEntry
+          label="Kommunale Steuerkraft"
+          :value="activeCity.taxes_data['2022 Steuerkraft je Einwohner']"
+        ></ListEntry>
       </li>
       <li>
-        <ListEntry label="Bevölkerungswachstum" :value="'tba'"></ListEntry>
+        <ListEntry
+          label="Bevölkerungswachstum (2016-2022)"
+          :value="activeCity.population_increase"
+        ></ListEntry>
       </li>
       <li>
         <ListEntry label="Bevölkerungsdichte" :value="'tba'"></ListEntry>

@@ -1,6 +1,7 @@
 <template>
   <div class="competitor-data-root">
     <h4 class="title is-4 has-text-bold">Konkurrenzausbau vorhanden?</h4>
+    <span style="font-size: 0.66rem">Zufällige Dummy-Daten</span>
     <div class="columns">
       <div class="column">
         <b-image

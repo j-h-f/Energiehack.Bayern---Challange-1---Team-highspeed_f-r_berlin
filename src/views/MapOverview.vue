@@ -58,6 +58,17 @@
           layerId="lew_infrastructure_layer"
           :layer="lew_infrastructure_layer"
         />
+
+        <MglGeojsonLayer
+          ref="heatmap"
+          v-if="heatMapSource"
+          sourceId="heatMap"
+          :source="heatMapSource"
+          layerId="heatmap_layer"
+          :layer="heatmap_layer"
+        />
+
+        <MglMarker v-if="activeCity" :coordinates="activeCoordinates" />
       </MglMap>
     </div>
   </div>
@@ -67,7 +78,7 @@
 import Mapbox from "mapbox-gl";
 import {
   MglMap,
-  // MglMarker,
+  MglMarker,
   MglGeojsonLayer,
   MglNavigationControl,
 } from "vue-mapbox";
@@ -80,7 +91,7 @@ export default {
   name: "MapOverview",
   components: {
     MglMap,
-    // MglMarker,
+    MglMarker,
     MglGeojsonLayer,
     SearchBox,
     DetailBox,
@@ -94,16 +105,6 @@ export default {
         this.setActiveCity(newResult[0]);
       }
     },
-    // showCityBorders() {
-    //   if (!this.showCityBorders) {
-    //     this.$refs.cityBorders.remove();
-    //   }
-    // },
-    // showLewInfrastructure() {
-    //   if (!this.showLewInfrastructure) {
-    //     this.$refs.lewInfrastructure.remove();
-    //   }
-    // },
   },
   data() {
     return {
@@ -155,6 +156,32 @@ export default {
           "circle-color": "rgba(0, 75, 173, 1)",
         },
       },
+      heatMapSource: null,
+      heatmap_layer: {
+        id: "heatmap_layer",
+        type: "fill",
+        source: {
+          type: "geojson",
+          data: null,
+        },
+        paint: {
+          "fill-color": [
+            "interpolate",
+            ["linear"],
+            ["get", "SCORE"],
+            0,
+            "rgba(255, 0, 0, 0)",
+            1,
+            "rgba(230, 61, 28, 0.75)",
+            7,
+            "rgba(230, 187, 27, 0.75)",
+            15,
+            "rgba(179, 230, 27, 0.75)",
+            23,
+            "rgba(27, 230, 52, 0.75)",
+          ],
+        },
+      },
     };
   },
   created() {
@@ -172,6 +199,11 @@ export default {
       this.lewInfrastructureSource = res.data;
       this.lew_infrastructure_layer.source.data = this.lewInfrastructureSource;
     });
+
+    axios.get("data/Scoreboard_Polygon.geojson").then((res) => {
+      this.heatMapSource = res.data;
+      this.heatmap_layer.source.data = this.heatMapSource;
+    });
   },
   methods: {
     setActiveCity(e) {
@@ -181,14 +213,7 @@ export default {
         this.activeCity.coordinates_data.y,
       ];
       this.zoom = 9;
-      this.geojsonLayerActive.source.data = this.geojson.features.filter(
-        (elem) => {
-          return (
-            elem.properties.AGS_0 ==
-            this.activeCity.city_data["Amtl. Gemeindeschlüssel"]
-          );
-        }
-      )[0];
+      this.activeCoordinates = this.center;
     },
 
     show_static_city() {
